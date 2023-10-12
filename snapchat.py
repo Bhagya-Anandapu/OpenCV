@@ -1,5 +1,7 @@
 import cv2
 import os
+import  matplotlib.pyplot as plt
+import shutil
 
 userID = {}
 currentUSR = ""
@@ -46,6 +48,7 @@ def snap():
             print("Failed to grab frame")
             break
         cv2.imshow("press space to take a photo", frame)
+        
         k = cv2.waitKey(1)
         if k % 256 == 27:
             print("Escape hit, closing...")
@@ -66,9 +69,38 @@ def quit_program():
     currentUSR = ""
     exit()
 
+def sendTo():
+    global currentUSR
+    folder_path = os.getcwd()+"/"+currentUSR
+    files = os.listdir(folder_path)
+    imgname=input("Enter image name: ")+".jpg"
+    usr=input("Enter user ID: ")
+    if usr in userID:
+        folder_path = os.getcwd()+"/"+usr
+        files = os.listdir(folder_path)
+        img_name = os.path.join(folder_path, imgname)
+        if os.path.isfile(img_name):
+            print("Image already exists")
+        else:
+            # img_name = os.path.join(folder_path, imgname)
+            # img_name1 = os.path.join(os.getcwd()+"/"+currentUSR, imgname)
+            # os.rename(img_name1, img_name)
+            # print("Image sent")
+            # Define your source and destination paths
+            img_name1 = os.path.join(os.getcwd() + "/" + currentUSR, imgname)
+            img_name = os.path.join(folder_path, imgname)
+
+            # Copy the image file from source to destination
+            shutil.copy2(img_name1, img_name)
+
+            print("Image copied and sent")
+    else:
+        print("User does not exist")
+    
+
 def view():
     global currentUSR
-    folder_path = os.getcwd()+currentUSR
+    folder_path = os.getcwd()+"/"+currentUSR
     files = os.listdir(folder_path)
 
 # Iterate over the files and print their names
@@ -86,7 +118,10 @@ def view():
 
         if image is not None:
             # Display the image
-            cv2.imshow("Image Viewer", image)
+            plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+            plt.title(currentUSR)
+            plt.axis('off')
+            plt.show()
 
             # Wait for a key press and close the window
             cv2.waitKey(0)
@@ -103,17 +138,21 @@ def signIn():
     if user in userID:
         psd = input("Enter password: ")
         if psd == userID[user]:
-            currentUSR = user
-            print("1.Take a picture")
-            print("2.View image")
-            print("3.Logout")
-            choice = input("Enter choice: ")
-            if choice=='3':
-                quit_program()
-            elif choice=='1':
-                snap()            
-            elif choice=='2':
-                view()
+            while(True):
+                currentUSR = user
+                print("1.Take a picture")
+                print("2.View image")
+                print("3.Logout")
+                print("4.Send to")
+                choice = input("Enter choice: ")
+                if choice=='3':
+                    quit_program()
+                elif choice=='1':
+                    snap()            
+                elif choice=='2':
+                    view()
+                elif choice=='4':
+                    sendTo()
             
         else:
             print("Incorrect password.")
