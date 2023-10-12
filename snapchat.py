@@ -12,7 +12,7 @@ def signUp():
         print("Passwords do not match. Retry!!")
         psd = input("Enter password: ")
         p = input("Re-enter password: ")
-    parent_dir = "C:/Users/yaswanth kumar/OneDrive/Desktop/coding/"
+    parent_dir = os.getcwd()
     
     # Create the 'coding' directory if it doesn't exist
     os.makedirs(parent_dir, exist_ok=True)
