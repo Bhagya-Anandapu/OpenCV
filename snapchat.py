@@ -68,7 +68,7 @@ def quit_program():
 
 def view():
     global currentUSR
-    folder_path = "C:/Users/yaswanth kumar/OneDrive/Desktop/coding/"+currentUSR
+    folder_path = os.getcwd()+currentUSR
     files = os.listdir(folder_path)
 
 # Iterate over the files and print their names
